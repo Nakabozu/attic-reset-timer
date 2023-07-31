@@ -8,7 +8,7 @@ const css = {
 };
 const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let isMuted;
-  const socket = io("ws://localhost:5174/");
+  const socket = io("ws://134.209.222.229/");
   const secondsToString = (seconds) => {
     if (seconds / 10 < 1) {
       return `0${seconds}`;
