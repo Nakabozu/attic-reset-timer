@@ -3,7 +3,7 @@
     import { io } from "socket.io-client";
     import moment from "moment";
 
-    const socket = io("ws://localhost:5174/");
+    const socket = io("ws://134.209.222.229/");
 
     const secondsToString = (seconds: number) => {
         if(seconds/10 < 1){
