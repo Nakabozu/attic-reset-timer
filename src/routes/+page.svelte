@@ -13,23 +13,39 @@
         }
     }
 
+    const audioFileList = [
+        {title: "Dings and Rattles", audio: "Several Dings.mp3"},
+        {title: "Toaster Ding", audio: "Toaster Ding.mp3"},
+        {title: "Car Door Is Open Chime", audio: "Car Door Open chime.mp3"},
+        {title: "Twinkle Toes", audio: "Twinkle Toes.mp3"},
+        {title: "Typewriter on the fritz", audio: "Typewriter.mp3"},
+        {title: "Ehem", audio: "Double D Ehem.mp3"},
+        {title: "Ed, Edd, n Eddy Title Card", audio: "Ed, Edd, n Eddy Intro.mp3"},
+        {title: "La Cucaracha Car Horn", audio: "La cucaracha.mp3"},
+        {title: "Get It On", audio: "Eddy says Get It On.mp3"},
+        {title: "Angry Man", audio: "Yelling Man why he so mad.mp3"},
+        {title: "Yodel", audio: "Yodel.mp3"}
+    ];
+
     $: isMuted = false;
+    let totalSecondsToCountdown = 420;
+    let timeToTriggerAlertAt = 1;
     let thisAudio: HTMLAudioElement;
-    let sound = "Several Dings.mp3";
+    let sound = audioFileList[0].audio;
     let wantsNotifications = false;
     let nextUpdateDate = moment();
-    let timeToNextUpdate = 420-(Math.abs(nextUpdateDate.diff(moment(), "s")) % 420);
+    let timeToNextUpdate = totalSecondsToCountdown-(Math.abs(nextUpdateDate.diff(moment(), "s")) % totalSecondsToCountdown);
     let minutesToNextUpdate = Math.floor(timeToNextUpdate / 60);
     let secondsToNextUpdate = secondsToString(timeToNextUpdate % 60);
 
     // STARTUP THE CLOCK
     onMount(() => {
 		const interval = setInterval(() => {
-			timeToNextUpdate = 420-(Math.abs(nextUpdateDate.diff(moment(), "s")) % 420);
+			timeToNextUpdate = totalSecondsToCountdown-(Math.abs(nextUpdateDate.diff(moment(), "s")) % totalSecondsToCountdown);
             minutesToNextUpdate = Math.floor(timeToNextUpdate / 60);
             secondsToNextUpdate = secondsToString(timeToNextUpdate % 60);
 
-            if(timeToNextUpdate <= 1){
+            if(timeToNextUpdate === timeToTriggerAlertAt){
                 thisAudio.play();
                 if(wantsNotifications){
                     Notification.requestPermission().then(perm => {
@@ -42,7 +58,7 @@
                     });
                 }
             }
-		}, 500);
+		}, 999);
 
 		return () => {
 			clearInterval(interval);
@@ -81,54 +97,67 @@
     
 </script>
 
-<div class="banner-container">
+<header class="banner-container">
     <h1>Almost Abandoned Attic Restock Timer</h1>
-</div>
-<h2>{minutesToNextUpdate}:{secondsToNextUpdate}</h2>
-    <h3>
-        <button class="transparent-button" on:click={()=>{wantsNotifications = !wantsNotifications}}>
-            <img
-                src="icons8-notification.svg"
-                alt={wantsNotifications ? "Notifications on" : "Notifications off"} 
-                class={`${wantsNotifications ? "black-to-white" : "black-to-red"}`}/>
-        </button>
-    </h3>
-        <div class="buttons-container">
-            <button class="time-adjust-button" on:click={()=>{adjust_timer(-1, "minute")}}>⏪ Subtract Minute</button>
-            <button class="time-adjust-button" on:click={()=>{adjust_timer(-1, "second")}}>⏴ Subtract Second</button>
-            <button class="time-adjust-button" on:click={reset_timer}>⟳ Reset Timer</button>
-            <button class="time-adjust-button" on:click={()=>{adjust_timer(1, "second")}}>⏵ Add Second</button>
-            <button class="time-adjust-button" on:click={()=>{adjust_timer(1, "minute")}}>⏩ Add Minute</button>
-        </div>
+</header>
 
-        <div class="audio-container">
-            <input
-                type="image"
-                src={isMuted ? "icons8-no-audio-24.png" : "icons8-audio-64.png"}
-                alt={isMuted ? "Audio is muted" : "Audio is active"}
-                width="64px"
-                on:click={()=>{isMuted = !isMuted}}/>
-            <audio
-                class="audio-controls"
-                controls
-                src={sound}
-                bind:muted={isMuted}
-                bind:this={thisAudio}/>
-            <div class="audio-buttons-container">
-                <button class="audio-button" on:click={()=>{changeAudio("Several Dings.mp3")}}>Several Dings</button>
-                <button class="audio-button" on:click={()=>{changeAudio("Toaster Ding.mp3")}}>Toaster Ding</button>
-                <button class="audio-button" on:click={()=>{changeAudio("Car Door Open chime.mp3")}}>Car Door Is Open Chime</button>
-                <button class="audio-button" on:click={()=>{changeAudio("Twinkle Toes.mp3")}}>Twinkle Toes</button>
-                <button class="audio-button" on:click={()=>{changeAudio("Typewriter.mp3")}}>Typewriter on the fritz</button>
-                <button class="audio-button" on:click={()=>{changeAudio("Double D Ehem.mp3")}}>Ehem</button>
-                <button class="audio-button" on:click={()=>{changeAudio("Ed, Edd, n Eddy Intro.mp3")}}>Ed, Edd, n Eddy Title Card</button>
-                <button class="audio-button" on:click={()=>{changeAudio("La cucaracha.mp3")}}>La Cucaracha Car Horn</button>
-                <button class="audio-button" on:click={()=>{changeAudio("Yelling Man why he so mad.mp3")}}>Angry Man</button>
-                <button class="audio-button" on:click={()=>{changeAudio("Eddy says Get It On.mp3")}}>Get It On</button>
-                <button class="audio-button" on:click={()=>{changeAudio("Yodel.mp3")}}>Yodel</button>
-            </div>
-        </div>
-<section>Visit <a href="https://www.sunnyneo.com/attictimer/"> sunnyneo </a> for details about the almost abandoned attic.</section>
+<h3>
+    <div class="img-button-container">
+        <input
+            id="push-input"
+            type="image"
+            src="icons8-notification.svg"
+            alt={wantsNotifications ? "Notifications on" : "Notifications off"} 
+            class={`${wantsNotifications ? "black-to-white" : "black-to-red"}`}
+            on:click={()=>{wantsNotifications = !wantsNotifications}}/>
+        <label for="push-input">{wantsNotifications ? "Push Notifications On" : "Push Notifications Off"}</label>
+    </div>
+    <div class="img-button-container">
+        <input
+            id="mute-input"
+            type="image"
+            src={isMuted ? "icons8-no-audio-24.png" : "icons8-audio-64.png"}
+            alt={isMuted ? "Audio is muted" : "Audio is active"}
+            width="64px"
+            on:click={()=>{isMuted = !isMuted}}/>
+        <label for="mute-input">{isMuted ? "Audio is muted" : "Audio is active"}</label>
+    </div>
+</h3>
+
+<div class="timer-container">
+    <h2>{minutesToNextUpdate}:{secondsToNextUpdate}</h2>
+    <label for="seconds-between-alerts">Time to Trigger Alert At: </label>
+    <input id="seconds-between-alerts" type="number" inputmode="numeric" bind:value={timeToTriggerAlertAt} max={totalSecondsToCountdown} min={1}/>
+    <label for="seconds-between-alerts">Seconds between alerts: </label>
+    <input id="seconds-between-alerts" type="number" inputmode="numeric" bind:value={totalSecondsToCountdown} min={1}/>
+</div>
+
+<div class="buttons-container">
+    <button class="time-adjust-button" on:click={()=>{adjust_timer(-1, "minute")}}>⏪ Subtract Minute</button>
+    <button class="time-adjust-button" on:click={()=>{adjust_timer(-1, "second")}}>⏴ Subtract Second</button>
+    <button class="time-adjust-button" on:click={reset_timer}>⟳ Reset Timer</button>
+    <button class="time-adjust-button" on:click={()=>{adjust_timer(1, "second")}}>⏵ Add Second</button>
+    <button class="time-adjust-button" on:click={()=>{adjust_timer(1, "minute")}}>⏩ Add Minute</button>
+</div>
+
+    <div class="audio-container">
+        <audio
+            class="audio-controls"
+            controls
+            src={sound}
+            bind:muted={isMuted}
+            bind:this={thisAudio}/>
+        <select id="sound-options" name="sound-options" bind:value={sound}>
+            {#each audioFileList as soundOption}
+                <option value={soundOption.audio}>{soundOption.title}</option>
+            {/each}
+        </select> 
+    </div>
+    <footer>
+        <p>You can find the almost abandoned attic <a href="https://www.neopets.com/halloween/garage.phtml">here</a>.</p>
+        <p>Visit <a href="https://www.sunnyneo.com/attictimer/">sunnyneo</a> for details about the almost abandoned attic.</p>
+    </footer>
+
 <style>
     :global(body){
         margin:0px;
@@ -139,6 +168,10 @@
 
         background: rgb(13,10,39);
         background: linear-gradient(45deg, rgba(13,10,39,1) 0%, rgba(44,24,93,1) 35%, rgba(83,140,167,1) 100%); 
+    }
+
+    p{
+        white-space: pre-wrap;
     }
 
     a{
@@ -174,6 +207,16 @@
         -webkit-text-stroke: 2px black; /* width and color */
     }
     
+    .timer-container{
+        text-align: center;
+        margin-bottom: 2em;
+    }
+
+    .timer-container input:not(:last-child){
+        margin-right: 10px;
+    }
+
+    /* The timer itself */
     h2{
         width: 100%;
         text-align: center;
@@ -183,13 +226,16 @@
         font-weight: 600;
 
         text-shadow: #000000 -7px 5px 6px;
+        padding: 0px;
+        margin: 0px;
     }
 
+    /* contains the push notifications and mute buttons*/
     h3{
         display: flex;
         flex-flow: row 1;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
     }
 
     .black-to-red{
@@ -198,6 +244,19 @@
 
     .black-to-white{
         filter: invert(100%);
+    }
+
+    .img-button-container{
+        display: flex;
+        flex-direction: column;
+        width: 64px;
+        margin-right: 1em;
+    }
+
+    .img-button-container label{
+        margin-top: 1em;
+        text-align: center;
+        font-size: 0.5em;
     }
 
     .buttons-container{
@@ -218,10 +277,6 @@
         min-width: "300px";
         width: 50%;
         padding: 1em 0em;
-    }
-
-    .audio-button{
-        
     }
 
     .transparent-button{
@@ -259,12 +314,20 @@
         color: #D50020;
     }
 
-    section{
-        position: relative;
+    footer{
+        width: 100%;
+        position: absolute;
         bottom: 0px;
+    }
+
+    footer p{
         display: flex;
         flex-direction: row;
         flex-grow: 1;
         justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: 0px;
+        padding-bottom: 10px;
     }
 </style>

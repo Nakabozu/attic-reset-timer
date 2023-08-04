@@ -10,7 +10,7 @@ return {
 	assets: new Set(["AtticDweller.png","Car Door Open chime.mp3","Double D Ehem.mp3","Ed, Edd, n Eddy Intro.mp3","Eddy says Get It On.mp3","favicon.png","ghost_shop.gif","icons8-audio-64.png","icons8-no-audio-24.png","icons8-notification.svg","La cucaracha.mp3","Pop the cork.mp3","Several Dings.mp3","Toaster Ding.mp3","Twinkle Toes.mp3","Typewriter.mp3","Yelling Man why he so mad.mp3","Yodel.mp3"]),
 	mimeTypes: {".png":"image/png",".mp3":"audio/mpeg",".gif":"image/gif",".svg":"image/svg+xml"},
 	_: {
-		client: {"start":"_app/immutable/entry/start.aced2d1d.js","app":"_app/immutable/entry/app.4542138b.js","imports":["_app/immutable/entry/start.aced2d1d.js","_app/immutable/chunks/scheduler.19f0db05.js","_app/immutable/chunks/singletons.a222445e.js","_app/immutable/entry/app.4542138b.js","_app/immutable/chunks/scheduler.19f0db05.js","_app/immutable/chunks/index.55d99e41.js"],"stylesheets":[],"fonts":[]},
+		client: {"start":"_app/immutable/entry/start.8c046ef5.js","app":"_app/immutable/entry/app.34464285.js","imports":["_app/immutable/entry/start.8c046ef5.js","_app/immutable/chunks/scheduler.19f0db05.js","_app/immutable/chunks/singletons.dc310578.js","_app/immutable/entry/app.34464285.js","_app/immutable/chunks/scheduler.19f0db05.js","_app/immutable/chunks/index.55d99e41.js"],"stylesheets":[],"fonts":[]},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
